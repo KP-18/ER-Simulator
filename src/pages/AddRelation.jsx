@@ -18,7 +18,7 @@ const AddRelation = () => {
 
   useEffect(() => {
     // Fetch existing data
-    axios.get(`http://localhost:8080/${id}/relations`)
+    axios.get(`http://localhost:8080/api/getOneRelations/${id}`)
       .then(res => {
         setRelation(res.data.relationships); 
       })
@@ -59,7 +59,7 @@ const AddRelation = () => {
       return;
     }
     try {
-      await axios.post(`http://localhost:8080/${id}/relations`, relation);
+      await axios.post(`http://localhost:8080/api/postOneRelations/${id}`, relation);
       navigate(`${id}`);
     } catch (err) {
       console.log(err);

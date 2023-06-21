@@ -15,7 +15,7 @@ const AddEntity = () => {
 
   useEffect(() => {
     // Fetch existing data
-    axios.get(`http://localhost:8080/${id}/entities`)
+    axios.get(`http://localhost:8080/api/getOneEntity/${id}`)
       .then(res => {
         setEntity(res.data.entity); 
       })
@@ -38,7 +38,7 @@ const AddEntity = () => {
       return;
     }
     try {
-      await axios.post(`http://localhost:8800/${id}/entities`, entity);
+      await axios.post(`http://localhost:8080/api/postOneEntity/${id}`, entity);
       navigate(`${id}`);
     } catch (err) {
       console.log(err);

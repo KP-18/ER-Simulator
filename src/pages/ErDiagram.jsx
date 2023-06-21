@@ -11,7 +11,7 @@ const ErDiagram = () => {
   useEffect(() => {
     const fetchEntitiesById = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/${id}`);
+        const res = await axios.get(`http://localhost:8080/api/getOne/${id}`);
         setEntities(res.data.entities);
       } catch (err) {
         console.log(err);
@@ -19,7 +19,7 @@ const ErDiagram = () => {
     };
     const fetchRelationsById = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/${id}`);
+        const res = await axios.get(`http://localhost:8080/api/getOne/${id}`);
         setRelations(res.data.relationships);
       } catch (err) {
         console.log(err);
