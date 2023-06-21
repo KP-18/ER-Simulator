@@ -12,8 +12,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomeComp/>} />
           <Route path="/:id" element={<ErDiagram />} />
-          <Route path="/:id/entities" element={<AddEntity />} />
-          <Route path="/:id/relations" element={<AddRelation />} />
+          <Route path="/entities/:id" element={<AddEntity />} />
+          <Route path="/relations/:id" element={<AddRelation />} />
         </Routes>
       </BrowserRouter>
     </div>

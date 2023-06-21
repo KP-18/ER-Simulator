@@ -13,54 +13,28 @@ const ErDiagram = () => {
       try {
         const res = await axios.get(`http://localhost:8080/api/getOne/${id}`);
         setEntities(res.data.entities);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    const fetchRelationsById = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/api/getOne/${id}`);
         setRelations(res.data.relationships);
       } catch (err) {
         console.log(err);
       }
-    }
+    };
     fetchEntitiesById();
-    fetchRelationsById();
-  }, [id]); // Fetch entities whenever the ID parameter changes
-
-  // const handleDelete1 = async (id1) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8080/relations/${id}/${id1}`);
-  //     setRelations(relations.filter(relation => relation.id !== id1)); // Update the entities state to remove the deleted entity
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // const handleDelete = async (id1) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8080/${id}/${id1}`);
-  //     setEntities(entities.filter(entity => entity.id !== id1)); // Update the entities state to remove the deleted entity
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  }, [id]);
 
   return (
     <div className="main">
       <h1>ER Simulator</h1>
       <div className="entities">
         {entities.map((entity) => (
-          <div key={entity.id} className="entity">
+          <div key={entity._id} className="entity">
             <h2>{entity.name}</h2>
             <div className="attributes">
               {entity.attributes.map((attribute) => (
-                <div key={attribute.id} className="attribute">
+                <div key={attribute._id} className="attribute">
                   <h3>{attribute.name}</h3>
                   <h4>{attribute.dataType}</h4>
-                  <h4>{attribute.isPrimaryKey.toString()}</h4>
-                  <h4>{attribute.isMultiValue.toString()}</h4>
+                  <h4>{attribute.isPrimaryKey}</h4>
+                  <h4>{attribute.isMultiValue}</h4>
                 </div>
               ))}
             </div>
@@ -80,7 +54,7 @@ const ErDiagram = () => {
 
       <button className="addHome">
         <Link
-          to="/${id}/entities"
+          to="/entities/${id}"
           style={{ color: "inherit", textDecoration: "none" }}
         >
           Add new Entity
@@ -92,14 +66,14 @@ const ErDiagram = () => {
       <div className="relations">
         
       {relations.map((relation) => (
-          <div key={relation.id} className="relation">
+          <div key={relation._id} className="relation">
             <h2>{relation.name}</h2>
             <h3>{relation.from}</h3>
             <h3>{relation.to}</h3>
             <h3>{relation.type}</h3>
             <div className="attributes">
               {relation.attributes.map((attribute) => (
-                <div key={attribute.id} className="attribute">
+                <div key={attribute._id} className="attribute">
                   <h3>{attribute.name}</h3>
                   <h4>{attribute.dataType}</h4>
                   <h4>{attribute.isPrimaryKey.toString()}</h4>
@@ -112,7 +86,7 @@ const ErDiagram = () => {
 
       <button className="addHome">
         <Link
-          to="/${id}/relations"
+          to="/relations/${id}"
           style={{ color: "inherit", textDecoration: "none" }}
         >
           Make Changes Relationship
@@ -120,7 +94,7 @@ const ErDiagram = () => {
       </button>
       <button className="addHome">
         <Link
-          to="/${id}/relations"
+          to="/relations/${id}"
           style={{ color: "inherit", textDecoration: "none" }}
         >
           Add new Relationship

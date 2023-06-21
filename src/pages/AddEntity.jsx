@@ -6,20 +6,25 @@ import FormField from "./FormField";
 
 const AddEntity = () => {
   const [entity, setEntity] = useState([{
-    EntityName: "",
+    name: "",
     attributes: []
   }]);
   const { id } = useParams(); // Get the ID parameter from the URL
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+
   useEffect(() => {
-    // Fetch existing data
-    axios.get(`http://localhost:8080/api/getOneEntity/${id}`)
-      .then(res => {
-        setEntity(res.data.entity); 
-      })
-  }, [id])
+    const fetchEntitiesById = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/getOneEntity/${id}`);
+        setEntity(res.data.entities);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchEntitiesById();
+  }, [id]);
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -101,14 +106,14 @@ const AddEntity = () => {
         entity.map((x,i) =>{
         return(
 
-          <div className="single-entity">
+      <div key={entity._id} className="entity">
         <FormField
           label="Entity Name"
-          name="EntityName"
+          name="name"
           onChange={handleChange}
-          value={x.EntityName}
+          value={x.name}
           />
-              <div className="attributes">
+              <div key={attribute._id} className="attribute">
                   {
                     x.attributes.map((y,i)=>{
                     return(
