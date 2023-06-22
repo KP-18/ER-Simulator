@@ -76,7 +76,6 @@ const Attributes = () => {
           <button onClick={handleAdd}>Add Attribute</button>
         }
         {
-           attribute.length !== 1 && 
           <button onClick={()=>handleRemove(i)}>Remove</button>
         }
         </div>
