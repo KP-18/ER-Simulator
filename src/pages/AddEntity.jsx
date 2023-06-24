@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import FormField from './FormField';
 import { v4 as uuidv4 } from 'uuid';
+import './addEntity.css'
 const AddEntity = () => {
 
     const [entity, setEntity] = useState([{
