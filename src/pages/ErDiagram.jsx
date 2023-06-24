@@ -6,7 +6,6 @@ import './Er.css';
 const ErDiagram = () => {
   const [entities, setEntities] = useState([]);
   const [relations, setRelations] = useState([]);
-  const [error, setError] = useState(null);
   const { id } = useParams(); // Get the ID parameter from the URL
 
   useEffect(() => {
