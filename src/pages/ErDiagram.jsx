@@ -90,6 +90,13 @@ const ErDiagram = () => {
           ))}
         </div>
       </div>
+      <div className="SQL"> 
+      <button className="ddl-generator">
+        <Link to={`/sql/${id}`} className="link">
+          Generate DDL
+        </Link>
+      </button>
+      </div>
     </div>
   );
 };
