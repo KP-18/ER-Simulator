@@ -236,6 +236,72 @@ function relationalChanges(erJson)
         }
         return erJson;
 }
+// function createForeignKey(attribute, entityName) {
+//   return {
+//     name: attribute.name + "_fk",
+//     localColumn: attribute.name,
+//     foreignColumn: attribute.name,
+//     foreignEntity: entityName,
+//   };
+// }
+
+// function createAttribute(attribute, isMultivalue) {
+//   return {
+//     name: attribute.name,
+//     type: attribute.type,
+//     primaryKey: true,
+//     isMultivalue: isMultivalue,
+//   };
+// }
+
+// function createNewEntity(entityName, attribute1, attribute2, foreignKey) {
+//   return {
+//     id: "newentity",
+//     name: "_multivalued_" + attribute2.name,
+//     attributes: [attribute1, attribute2],
+//     foreignKeys: [foreignKey],
+//   };
+// }
+
+// function multivalue_handle(jsonData) {
+//   for (let i = 0; i < jsonData.entities.length; i++) {
+//     const entity = jsonData.entities[i];
+//     let primaryKeyAttribute, multivalueAttribute;
+
+//     for (let j = 0; j < entity.attributes.length; j++) {
+//       const attribute = entity.attributes[j];
+
+//       if (attribute.primaryKey) {
+//         primaryKeyAttribute = attribute;
+//       } else if (attribute.isMultivalue) {
+//         multivalueAttribute = attribute;
+//         attribute.isMultivalue = false;
+//       }
+//     }
+
+//     if (primaryKeyAttribute && multivalueAttribute) {
+//       const foreignKey = createForeignKey(primaryKeyAttribute, entity.name);
+//       const attribute1 = createAttribute(
+//         primaryKeyAttribute,
+//         multivalueAttribute.isMultivalue
+//       );
+//       const attribute2 = createAttribute(multivalueAttribute, false);
+//       const newEntity = createNewEntity(
+//         entity.name,
+//         attribute1,
+//         attribute2,
+//         foreignKey
+//       );
+
+//       entity.attributes.splice(
+//         entity.attributes.indexOf(multivalueAttribute),
+//         1,
+//         attribute1
+//       );
+//       jsonData.entities.push(newEntity);
+//     }
+//   }
+// }
 
       function createTable(erJson)
 {
@@ -277,8 +343,9 @@ function relationalChanges(erJson)
   return res;
 }
 
-const erJson = relationalChanges(getERJson(er));
-const ddlScript = createTable(erJson);
+const intermidiat = relationalChanges(getERJson(er));
+// const erJson = multivalue_handle(intermidiat);
+const ddlScript = createTable(intermidiat);
 
 const handleCopyClick = () => {
   navigator.clipboard.writeText(ddlScript);

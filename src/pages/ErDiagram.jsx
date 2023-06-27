@@ -72,17 +72,16 @@ const ErDiagram = () => {
           {relations.map((relation) => (
             <div key={relation._id} className="relation">
               <h3>Relationship: {relation.name}</h3>
-              <p>From: {getEntityNameById(relation.from)}</p>
-              <p>To: {getEntityNameById(relation.to)}</p>
-              <p>Type: {relation.type}</p>
+              <h4 className='From'>From: {getEntityNameById(relation.from)}</h4>
+              <h4 className='To'>To: {getEntityNameById(relation.to)}</h4>
+              <h4 className='Type'>Type: {relation.type}</h4>
               <div className="attributes">
-                <h4>Attributes</h4>
                 {relation.attributes.map((attribute) => (
                   <div key={attribute._id} className="attribute">
-                    <p>Name: {attribute.name}</p>
+                    <h4>Attribute Name: {attribute.name}</h4>
                     <p>Type: {attribute.dataType}</p>
-                    <p>Primary Key: {attribute.isPrimaryKey}</p>
-                    <p>Multivalue: {attribute.isMultiValue}</p>
+                    {attribute.isPrimaryKey && <p>Primary Key</p>}
+                    {attribute.isMultiValue && <p>Multivalued</p>}
                   </div>
                 ))}
               </div>

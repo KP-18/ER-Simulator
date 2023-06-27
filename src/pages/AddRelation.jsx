@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import FormField from './FormField';
 import { v4 as uuidv4 } from 'uuid';
-
+import './AddRelation.css'
 const AddRelation = () => {
   const [relation , setRelation] = useState([{
     id: uuidv4(),
@@ -22,14 +22,17 @@ const AddRelation = () => {
     ]
   }]);
 
+const [entities, setEntities] = useState([]);
   const {id} = useParams();
  
   useEffect(() => {
     const fetchData = async() => {
         try{
-            const res = await axios.get(`http://localhost:8080/api/getOneRelation/${id}`);
-            console.log(res.data);
-            setRelation(res.data);
+            const res = await axios.get(`http://localhost:8080/api/getOne/${id}`);
+            // console.log(res.data.relationships);
+            setRelation(res.data.relationships);
+            setEntities(res.data.entities);
+            console.log(res.data.entities);
         }catch(err){
           console.log(err);
         }
@@ -40,18 +43,24 @@ const AddRelation = () => {
    
   
   const handleChangeRel = (e, id) => {
+    //  console.log("yess");
     const { name, value } = e.target;
-    setRelations((prevRelations) =>
+    console.log(name);
+    console.log(value);
+    
+    setRelation((prevRelations) =>
       prevRelations.map((rel) => {
         if (rel.id === id) {
-          return { ...rel, [name]: value };
+          return { ...rel, [name]: name === 'to' || name == 'from' ? value : value  };
         } else {
           return rel;
         }
       })
     );
   };
+
   
+// this is for the attributes  
 const handleChange = (e, relationId, attId) => {
     const { name, value, checked } = e.target;
     setRelation(prevRelation => prevRelation.map(rel => {
@@ -130,57 +139,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
     if(relation.length === 0){
         alert("Please add atleast one relation");
-    }
-    else{
-        for(let i=0;i<relation.length;i++){
-            if(relation[i].name === ""){
-                alert("Please enter relation name");
-                return;
-            }
-            if(relation[i].from === ""){
-                alert("Please enter from entity");
-                return;
-            }
-            if(relation[i].to === ""){
-                alert("Please enter to entity ");
-                return;
-            }
-            if(relation[i].type === ""){
-                alert("Please enter type of relation ");
-                return;
-            }
-        }
-    }
-    // relation validation
-    try {
-      const response = await axios.get(`http://localhost:8080/api/getOneEntity/${id}`);
-      const entities = response.data;
-      for(let i=0;i<relation.length;i++){
-        let from = relation[i].from;
-        let to = relation[i].to;
-        let flag1 = false;
-        let flag2 = false;
-        for(let j=0;j<entities.length;j++){
-          if(from === entities[j].name){
-            flag1 = true;
-            relation[i].from = entities[j]._id;
-          }
-          if(to === entities[j].name){
-            flag2 = true;
-            relation[i].to = entities[j]._id;
-          }
-        }
-        if(flag1 === false){
-          alert("From entity does not exist");
-          return;
-        }
-        if(flag2 === false){
-          alert("To entity does not exist");
-          return;
-        }
-      }
-    } catch (error) {
-      console.error(error);
+        return;
     }
     console.log("Relation is fine");
     const relationships = {
@@ -196,6 +155,15 @@ const handleSubmit = async (e) => {
     }
 }
 
+const getEntityNameById = (id) => {
+  const entity = entities.find((entity) => entity._id === id);
+  if (entity) {
+    return entity.name;
+  } else {
+    return 'Untitled Entity';
+  }
+};
+
   return (
     <div className="main-div">
       <h1>All Relationships</h1>
@@ -204,30 +172,50 @@ const handleSubmit = async (e) => {
                 relation.map((rel) =>{  //changes
                 return(
                 <div key={rel.id} className="single-relation">
-                <FormField
-                 label ="Relation Name"
-                 name="name"
-                 value={rel.name || ''}
-                 onchange={(e) => handleChangeRel(e, rel.id)}
-                />
-                <FormField
-                 label ="From"
-                 name="from"
-                 value={rel.from || ''}
-                 onchange={(e) => handleChangeRel(e, rel.id)}
-                />
-                <FormField
-                 label ="To"
-                 name="to"
-                 value={rel.to || ''}
-                 onchange={(e) => handleChangeRel(e, rel.id)}
-                />
-                <FormField
-                 label ="Type"
-                 name="type"
-                 value={rel.type || ''}
-                 onchange={(e) => handleChangeRel(e, rel.id)}
-                />
+                    <FormField
+                    label ="Relation Name"
+                    name="name"
+                    value={rel.name || ''}
+                    onChange={(e) => handleChangeRel(e, rel.id)}
+                    />
+                    {/* DROP DOWN FOR FROM ENTITY */}
+                    <label className='from-lebel'>
+                    From Entity
+                    <select name="from" value={(rel.from) || '' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    {entities.map((entity) => (
+                        <option key={entity._id} value={entity._id}>
+                        {entity.name}
+                        </option>
+                    ))}
+                    </select>
+                    </label>
+
+                    {/* DROP DOWN FOR TO ENTITY */}
+                    <label className='to-lebel'>
+                    To Entity
+                    <select name="to" value={(rel.to) || '' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    {entities.map((entity) => (
+                        <option key={entity._id} value={entity._id}>
+                        {entity.name}
+                        </option>
+                    ))}
+                    </select>
+                    </label>
+
+                    <label>Type
+                    <select name="type" value={rel.type || "one-to-one"} onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <option value="one-to-one">One-to-One</option>
+                    <option value="many-to-one">Many-to-One</option>
+                    <option value="one-to-many">One-to-Many</option>
+                    <option value="many-to-many">Many-to-Many</option>
+                    </select>
+                    </label>
+                    {/* <FormField
+                    label ="Type"
+                    name="type"
+                    value={rel.type || ''}
+                    onChange={(e) => handleChangeRel(e, rel.id)}
+                    /> */}
                    <div className="attributes">
                     {
                         rel.attributes.map((att) => {
