@@ -52,7 +52,7 @@ var attribute = {
 name : er.entities[i].attributes[j].name,
 type : er.entities[i].attributes[j].dataType,
 isPrimaryKey : er.entities[i].attributes[j].isPrimaryKey,
-isMultiValue : er.entities[i].attributes[j].isMultiValue
+isMultivalue : er.entities[i].attributes[j].isMultivalue
 }
 entity.attributes.push(attribute);
 }
@@ -73,7 +73,7 @@ for(var i = 0 ; i < er.relationships.length ; i++){
             name : er.relationships[i].attributes[j].name,
             type : er.relationships[i].attributes[j].dataType,
             isPrimaryKey : er.relationships[i].attributes[j].isPrimaryKey,
-            isMultiValue : er.relationships[i].attributes[j].isMultiValue
+            isMultivalue : er.relationships[i].attributes[j].isMultivalue
         }
         relationship.attributes.push(attribute);
     }
@@ -114,19 +114,19 @@ return erJson;
 
     for (let i = 0; i < jsonData.entities.length; i++) {
       const Entity = jsonData.entities[i];
+      Entity.foreignKeys.push(keys);
+      Entity.attributes.push(keys2);
+      for (let i = 0; i < rela.attributes.length; i++) {
+        Entity.attributes.push({
+          ...rela.attributes[i],
+          primaryKey: false,
+        });
+      }
       if (Entity.name === entityName) {
         break;
       }
     }
 
-    Entity.foreignKeys.push(keys);
-    Entity.attributes.push(keys2);
-    for (let i = 0; i < rela.attributes.length; i++) {
-      Entity.attributes.push({
-        ...rela.attributes[i],
-        primaryKey: false,
-      });
-    }
 
     return jsonData;
   };
@@ -311,7 +311,7 @@ function relationalChanges(erJson)
   for(let i = 0;i<erJson.entities.length;i++)
   {
     let sql = "CREATE TABLE "+erJson.entities[i].name+"(\n";
-    if(erJson.entities[i].attributes != undefined)
+    if(erJson.entities[i].attributes !== undefined)
     {
       for(let j = 0;j<erJson.entities[i].attributes.length;j++)
       {
@@ -320,7 +320,7 @@ function relationalChanges(erJson)
         {
           sql += " NOT NULL PRIMARY KEY";
         }
-        if(j != erJson.entities[i].attributes.length-1)
+        if(j !== erJson.entities[i].attributes.length-1)
         {
           sql += ",";
         }
@@ -330,7 +330,7 @@ function relationalChanges(erJson)
     for(let j=0;j<erJson.entities[i].foreignKeys.length;j++)
     {
       sql += "FOREIGN KEY("+erJson.entities[i].foreignKeys[j].name+") REFERENCES "+erJson.entities[i].foreignKeys[j].foreignEntity+"("+erJson.entities[i].foreignKeys[j].foreignColumn+")";
-      if(i != erJson.entities[i].foreignKeys.length-1)
+      if(i !== erJson.entities[i].foreignKeys.length-1)
       {
         sql += ",";
       }

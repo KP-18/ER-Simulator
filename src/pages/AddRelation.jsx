@@ -51,7 +51,7 @@ const [entities, setEntities] = useState([]);
     setRelation((prevRelations) =>
       prevRelations.map((rel) => {
         if (rel.id === id) {
-          return { ...rel, [name]: name === 'to' || name == 'from' ? value : value  };
+          return { ...rel, [name]: name === 'to' || name === 'from' || name == 'type' ? (value === "SELECT" ? "" : value) : value  };
         } else {
           return rel;
         }
@@ -141,6 +141,20 @@ const handleSubmit = async (e) => {
         alert("Please add atleast one relation");
         return;
     }
+    for(let i=0;i<relation.length;i++){
+        if(relation[i].from === ""){
+            alert("Please select from entity in",relation[i].name);
+            return;
+        }
+        if(relation[i].to === ""){
+            alert("Please select to entity in",relation[i].name);
+            return;
+        }
+        if(relation[i].type === ""){
+            alert("Please select type in",relation[i].name);
+            return;
+        }
+    }
     console.log("Relation is fine");
     const relationships = {
         relationships: relation
@@ -155,14 +169,7 @@ const handleSubmit = async (e) => {
     }
 }
 
-const getEntityNameById = (id) => {
-  const entity = entities.find((entity) => entity._id === id);
-  if (entity) {
-    return entity.name;
-  } else {
-    return 'Untitled Entity';
-  }
-};
+
 
   return (
     <div className="main-div">
@@ -181,7 +188,8 @@ const getEntityNameById = (id) => {
                     {/* DROP DOWN FOR FROM ENTITY */}
                     <label className='from-lebel'>
                     From Entity
-                    <select name="from" value={(rel.from) || '' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <select name="from" value={(rel.from) || 'SELECT' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <option value="SELECT">SELECT</option>
                     {entities.map((entity) => (
                         <option key={entity._id} value={entity._id}>
                         {entity.name}
@@ -193,7 +201,8 @@ const getEntityNameById = (id) => {
                     {/* DROP DOWN FOR TO ENTITY */}
                     <label className='to-lebel'>
                     To Entity
-                    <select name="to" value={(rel.to) || '' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <select name="to" value={(rel.to) || 'SELECT' } onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <option value="SELECT">SELECT</option>
                     {entities.map((entity) => (
                         <option key={entity._id} value={entity._id}>
                         {entity.name}
@@ -203,7 +212,8 @@ const getEntityNameById = (id) => {
                     </label>
 
                     <label>Type
-                    <select name="type" value={rel.type || "one-to-one"} onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <select name="type" value={rel.type || "SELECT"} onChange={(e) => handleChangeRel(e, rel.id)}>
+                    <option value="SELECT">SELECT</option>
                     <option value="one-to-one">One-to-One</option>
                     <option value="many-to-one">Many-to-One</option>
                     <option value="one-to-many">One-to-Many</option>
